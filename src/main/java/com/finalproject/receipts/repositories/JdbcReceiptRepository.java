@@ -44,6 +44,6 @@ public class JdbcReceiptRepository implements ReceiptRepository{
         receipt.setId(keyHolder.getKey().longValue());
     }
     private Date getToday(){
-        return new Date(new java.util.Date().getTime());
+        return new Date(System.currentTimeMillis());
     }
 }

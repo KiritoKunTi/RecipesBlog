@@ -6,6 +6,10 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.finalproject.receipts.security.SecurityConfiguration;
 
 public class AccessToken {
+    public String getAccessToken() {
+        return accessToken;
+    }
+
     private String accessToken;
     public AccessToken(String accessToken){
         this.accessToken = accessToken;

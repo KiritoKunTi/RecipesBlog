@@ -19,11 +19,16 @@ public class ReceiptController {
     }
     @PostMapping
     public Object addReceipt(@RequestBody Receipt receipt, @CookieValue(name = "refresh_token") String refreshToken, @CookieValue(name = "access_token") String accessToken, HttpServletResponse response){
-        accessToken = Authentication.checkUser(accessToken, refreshToken, response);
-        if (accessToken == ""){
+        long userID;
+        try {
+            userID = Authentication.getUserID(accessToken, refreshToken, response);
+            if (userID == 0) {
+                return Authentication.needAuthenticationResponse();
+            }
+        }catch (Exception exception){
             return Authentication.needAuthenticationResponse();
         }
-        receipt.setUserID(Authentication.getUserID(accessToken, refreshToken));
+        receipt.setUserID(userID);
         receiptRepository.save(receipt);
         for (Ingredient ingredient: receipt.getIngredients()){
             ingredient.setReceiptID(receipt.getId());

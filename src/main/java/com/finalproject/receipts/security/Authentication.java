@@ -24,36 +24,24 @@ public class Authentication {
         this.userRepository = userRepository;
         this.sessionRepository = sessionRepository;
     }
-    public static String checkUser(String accessToken, String refreshToken, HttpServletResponse response){
-        DecodedJWT decodedJWT;
-        try{
-            JWTVerifier verifier = JWT.require(SecurityConfiguration.algorithm).withIssuer("auth0").build();
-            decodedJWT = verifier.verify(accessToken);
 
-        }catch (Exception exception){
-            try {
-                if (getAccessToken(refreshToken) == "") {
-                    return "";
-                }
-                accessToken = getAccessToken(refreshToken);
-            }catch (Exception exception1){
-                return "";
-            }
-            setAccessToken(accessToken, response);
-            return accessToken;
-        }
-        return accessToken;
-    }
-
-    public static long getUserID(String accessToken, String refreshToken){
+    public static long getUserID(String accessToken, String refreshToken, HttpServletResponse response){
         long userID;
-            AccessToken accessTokenClass = new AccessToken(accessToken);
-            userID = accessTokenClass.getUserID();
-                if (getAccessToken(refreshToken) == "") {
-                    return 0;
-                }
-                AccessToken accessToken1 = new AccessToken(getAccessToken(refreshToken));
-                userID = accessToken1.getUserID();
+        try {
+            userID = new AccessToken(accessToken).getUserID();
+            if (userID != 0) {
+                setAccessToken(accessToken, response);
+                return userID;
+            }
+        }catch (Exception e) {
+            String access = getAccessToken(refreshToken);
+            if (access == "") {
+                return 0;
+            }
+            AccessToken accessToken1 = new AccessToken(accessToken);
+            setAccessToken(accessToken1.getAccessToken(), response);
+            userID = accessToken1.getUserID();
+        }
         return userID;
     }
 

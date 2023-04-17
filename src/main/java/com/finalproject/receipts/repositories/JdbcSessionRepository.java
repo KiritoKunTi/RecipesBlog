@@ -41,8 +41,8 @@ public class JdbcSessionRepository implements SessionRepository{
     }
     private static java.sql.Date getExpirationDate(){
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new java.util.Date());
-        calendar.add(Calendar.DAY_OF_MONTH, maxAgeDays);
+        calendar.setTime(new Date(System.currentTimeMillis()));
+        calendar.add(Calendar.MONTH, maxAgeDays);
         return new Date(calendar.getTime().getTime());
     }
 }
