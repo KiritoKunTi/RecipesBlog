@@ -1,5 +1,6 @@
 package com.finalproject.receipts.repositories;
 
+import com.finalproject.receipts.models.Ingredient;
 import com.finalproject.receipts.models.Receipt;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -8,11 +9,9 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -22,6 +21,23 @@ public class JdbcReceiptRepository implements ReceiptRepository{
     public JdbcReceiptRepository (JdbcTemplate jdbc){
         this.jdbc = jdbc;
     }
+
+
+
+    @Override
+    public List<Receipt> findAll() {
+        return jdbc.query("SELECT ID, NAME, USER_ID, CREATED_AT, DESCRIPTION FROM Receipts", this::mapRowToReceipt);
+    }
+
+    @Override
+    public Receipt findByID(long id) {
+        return jdbc.queryForObject("SELECT ID, NAME, USER_ID, CREATED_AT, DESCRIPTION FROM Receipts WHERE ID = ?", this::mapRowToReceipt, id);
+    }
+
+    private Receipt mapRowToReceipt(ResultSet resultSet, int rowNum) throws SQLException {
+        return new Receipt(resultSet.getLong("id"), resultSet.getString("name"), resultSet.getLong("user_id"), resultSet.getDate("created_at"), resultSet.getString("description"));
+    }
+
     @Override
     public void save(Receipt receipt) {
         receipt.setCreatedAt(getToday());
