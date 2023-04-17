@@ -21,4 +21,13 @@ create table if not exists Receipts(
                                     description text not null,
                                     created_at timestamp not null,
                                     foreign key(user_id) references Users(id)
+);
+
+create table if not exists Ingredients(
+                                       id bigint not null auto_increment primary key,
+                                       name varchar(512) not null,
+                                       receipt_id bigint not null,
+                                       measurement varchar(256) not null,
+                                       amount  float(4, 2) not null,
+                                       foreign key(receipt_id) references Receipts(id)
 )

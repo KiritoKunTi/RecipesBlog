@@ -24,7 +24,7 @@ public class Authentication {
         this.userRepository = userRepository;
         this.sessionRepository = sessionRepository;
     }
-    public static boolean checkUser(String accessToken, String refreshToken, HttpServletResponse response){
+    public static String checkUser(String accessToken, String refreshToken, HttpServletResponse response){
         DecodedJWT decodedJWT;
         try{
             JWTVerifier verifier = JWT.require(SecurityConfiguration.algorithm).withIssuer("auth0").build();
@@ -33,16 +33,16 @@ public class Authentication {
         }catch (Exception exception){
             try {
                 if (getAccessToken(refreshToken) == "") {
-                    return false;
+                    return "";
                 }
                 accessToken = getAccessToken(refreshToken);
             }catch (Exception exception1){
-                return false;
+                return "";
             }
             setAccessToken(accessToken, response);
-            return true;
+            return accessToken;
         }
-        return true;
+        return accessToken;
     }
 
     public static long getUserID(String accessToken, String refreshToken){

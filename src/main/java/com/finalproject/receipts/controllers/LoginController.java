@@ -19,7 +19,7 @@ import java.util.HashMap;
 @RestController
 @RequestMapping(path = "api/login", method = RequestMethod.POST)
 public class LoginController {
-    private final static int maxAgeMinutes = 30;
+    private final static int maxAgeMinutes = 5;
 
     private UserRepository userRepository;
     private SessionRepository sessionRepository;
