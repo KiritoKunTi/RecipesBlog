@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 abstract class AbstractValidator {
-    private Map<String, String> errors;
+    private Map<String, Object> errors;
     AbstractValidator(){
         errors = new HashMap<>();
     }
@@ -15,11 +15,13 @@ abstract class AbstractValidator {
         return errors.size() == 0;
     }
 
-    public Map<String, String> getErrors() {
-        return errors;
+    public Map<String, Object> getErrors() {
+        Map<String, Object> mp = new HashMap<>();
+        mp.put("errors", errors);
+        return mp;
     }
 
-    public void addError(String key, String err){
+    protected void addError(String key, Object err){
         errors.put(key, err);
     }
 }
