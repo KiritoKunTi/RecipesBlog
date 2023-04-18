@@ -8,8 +8,8 @@ import java.sql.Date;
 @Data
 @AllArgsConstructor
 public class Session {
-    private long userID;
     private long id;
+    private long userID;
     private String uuid;
     private Date expiredAt;
     public Session(long userID){

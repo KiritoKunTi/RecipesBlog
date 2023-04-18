@@ -34,13 +34,13 @@ public class Authentication {
                 return userID;
             }
         }catch (Exception e) {
-            String access = getAccessToken(refreshToken);
-            if (access == "") {
+            String newAccessToken = getAccessToken(refreshToken);
+            if (newAccessToken == "") {
                 return 0;
             }
-            AccessToken accessToken1 = new AccessToken(accessToken);
-            setAccessToken(accessToken1.getAccessToken(), response);
-            userID = accessToken1.getUserID();
+            AccessToken newToken = new AccessToken(newAccessToken);
+            setAccessToken(newToken.getAccessToken(), response);
+            userID = newToken.getUserID();
         }
         return userID;
     }

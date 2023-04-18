@@ -19,7 +19,7 @@ import java.util.HashMap;
 @RestController
 @RequestMapping(path = "api/login", method = RequestMethod.POST)
 public class LoginController {
-    private final static int maxAgeMinutes = 5;
+    private final static int maxAgeMinutes = 1;
 
     private UserRepository userRepository;
     private SessionRepository sessionRepository;
@@ -57,10 +57,7 @@ public class LoginController {
 
 
     private static Date getExpirationDate(){
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        calendar.add(Calendar.MINUTE, maxAgeMinutes);
-        return calendar.getTime();
+        return new Date(System.currentTimeMillis() + 60 * 1000 * maxAgeMinutes);
     }
 
     public static String generateJWTToken(long userID){
