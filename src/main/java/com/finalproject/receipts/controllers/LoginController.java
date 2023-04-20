@@ -43,6 +43,8 @@ public class LoginController {
             Session session = sessionRepository.save(userDB.getId());
             Cookie cookieAccess = new Cookie("access_token", generateJWTToken(userDB.getId()));
             Cookie cookieRefresh = new Cookie("refresh_token", session.getUuid());
+            cookieAccess.setPath("/api/private");
+            cookieRefresh.setPath("/api/private");
             response.addCookie(cookieRefresh);
             response.addCookie(cookieAccess);
         }catch (Exception exception){

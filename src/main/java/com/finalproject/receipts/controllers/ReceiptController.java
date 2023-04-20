@@ -1,20 +1,19 @@
 package com.finalproject.receipts.controllers;
 
+import com.finalproject.receipts.interceptors.AuthenticationRequestInterceptor;
 import com.finalproject.receipts.models.Ingredient;
 import com.finalproject.receipts.models.Receipt;
 import com.finalproject.receipts.repositories.IngredientRepository;
 import com.finalproject.receipts.repositories.ReceiptRepository;
 import com.finalproject.receipts.repositories.UserRepository;
-import com.finalproject.receipts.security.Authentication;
 import com.finalproject.receipts.validators.ReceiptValidator;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.websocket.server.PathParam;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/api/receipt")
+@RequestMapping(path = "/api")
 public class ReceiptController {
     ReceiptRepository receiptRepository;
 
@@ -26,7 +25,7 @@ public class ReceiptController {
         this.userRepository = userRepository;
     }
 
-    @GetMapping(path = "/all")
+    @GetMapping(path = "/public/receipt/all")
     public Object receipts(){
         List<Receipt> receipts = receiptRepository.findAll();
         for (Receipt receipt: receipts){
@@ -34,7 +33,7 @@ public class ReceiptController {
         }
         return receipts;
     }
-    @GetMapping(path = "/{id}")
+    @GetMapping(path = "/public/receipt/{id}")
     public Object receipt(@PathVariable("id") String id){
         Receipt receipt;
         try{
@@ -44,16 +43,13 @@ public class ReceiptController {
         receipt.setIngredients(ingredientRepository.findIngredientsByReceiptID(receipt.getId()));
         return receipt;
     }
-    @PostMapping
+    @PostMapping(path = "/private/receipt")
     public Object addReceipt(@RequestBody Receipt receipt, @CookieValue(name = "refresh_token") String refreshToken, @CookieValue(name = "access_token") String accessToken, HttpServletResponse response){
         long userID;
         try {
-            userID = Authentication.getUserID(accessToken, refreshToken, response);
-            if (userID == 0) {
-                return Authentication.needAuthenticationResponse();
-            }
+            userID = AuthenticationRequestInterceptor.getUserID(accessToken, refreshToken, response);
         }catch (Exception exception){
-            return Authentication.needAuthenticationResponse();
+            return null;
         }
         receipt.setUserID(userID);
         ReceiptValidator validator = new ReceiptValidator(receipt, userRepository);

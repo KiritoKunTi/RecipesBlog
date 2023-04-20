@@ -23,14 +23,14 @@ public class IngredientValidator extends AbstractValidator{
             addError("measurement", "measurement length should be greater than 0");
     }
 
+    private boolean isAmountValid(){
+        return ingredient.getAmount() > 0;
+    }
     private boolean isNameValid(){
         return ingredient.getName().length() != 0;
     }
+
     private boolean isMeasurementValid(){
         return ingredient.getMeasurement().length() != 0;
-    }
-
-    private boolean isAmountValid(){
-        return ingredient.getAmount() > 0;
     }
 }
